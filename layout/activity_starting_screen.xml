@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/img"
+    android:weightSum="1"
+    android:orientation="vertical"
+
+    >
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:background="@android:color/transparent"
+        android:drawableTop="@drawable/note"
+        android:text="بازی ها"
+        android:textColor="@android:color/background_dark"
+        android:textSize="35dp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="60dp"
+            android:layout_centerHorizontal="true"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/singerNameScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="102dp"
+                android:background="@drawable/rounded_corner"
+                android:padding="5dp"
+                android:text="0"
+                android:textSize="25dp" />
+
+            <TextView
+                android:id="@+id/songNameScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:background="@drawable/rounded_corner"
+                android:padding="5dp"
+                android:text="0"
+                android:textSize="25dp" />
+
+            <TextView
+                android:id="@+id/lyricsJumbleScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:background="@drawable/rounded_corner"
+                android:padding="5dp"
+                android:text="0"
+                android:textSize="25dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/start"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="100dp"
+                android:background="@drawable/rounded_corner"
+                android:drawableLeft="@drawable/singer"
+                android:text="اسم خواننده"
+                android:textSize="25dp"
+
+                />
+
+            <Button
+                android:id="@+id/button_song_name"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/rounded_corner"
+                android:drawableLeft="@drawable/music"
+                android:text="اسم اهنگ"
+                android:onClick="goToSongName"
+                android:textSize="25dp" />
+
+
+            <Button
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/rounded_corner"
+                android:drawableLeft="@drawable/j"
+                android:onClick="goToLyricsJumble"
+                android:text="کلمه های درهم"
+                android:textSize="25dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
