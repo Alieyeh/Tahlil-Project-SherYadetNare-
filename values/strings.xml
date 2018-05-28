@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">appy</string>
+    <string name="title_activity_lyrics_jumble">LyricsJumbleActivity</string>
+</resources>
