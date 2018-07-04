@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/img"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.alieyeh.appy.RoundActivity">
+
+    <TextView
+        android:id="@+id/highscore"
+        android:layout_width="124dp"
+        android:layout_height="74dp"
+        android:layout_above="@+id/goMenu"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="136dp"
+        android:text="TextView"
+        tools:layout_editor_absoluteX="125dp"
+        tools:layout_editor_absoluteY="158dp" />
+
+    <TextView
+        android:id="@+id/score"
+        android:layout_width="145dp"
+        android:layout_height="43dp"
+        android:layout_above="@+id/highscore"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="81dp"
+        android:text="TextView"
+        tools:layout_editor_absoluteX="124dp"
+        tools:layout_editor_absoluteY="303dp" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/score"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="23dp"
+        android:text="امتیاز"
+        android:textSize="50sp"
+        android:theme="@style/AppTheme"
+        tools:layout_editor_absoluteX="158dp"
+        tools:layout_editor_absoluteY="115dp" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/highscore"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="28dp"
+        android:text="بیشترین امتیاز"
+        android:textSize="24sp"
+        tools:layout_editor_absoluteX="158dp"
+        tools:layout_editor_absoluteY="253dp" />
+
+    <Button
+        android:id="@+id/goMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/goPlay"
+        android:layout_alignBottom="@+id/goPlay"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/orange_rounded_corner"
+        android:onClick="goToMenu"
+        android:text="Menu"
+        tools:layout_editor_absoluteX="30dp"
+        tools:layout_editor_absoluteY="472dp" />
+
+    <Button
+        android:id="@+id/goGenre"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/goMenu"
+        android:layout_alignBottom="@+id/goMenu"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="18dp"
+        android:layout_marginStart="18dp"
+        android:background="@drawable/orange_rounded_corner"
+        android:onClick="goToGenre"
+        android:text="Genre"
+        tools:layout_editor_absoluteX="148dp"
+        tools:layout_editor_absoluteY="472dp" />
+
+    <Button
+        android:id="@+id/goPlay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="77dp"
+        android:layout_marginEnd="11dp"
+        android:layout_marginRight="11dp"
+        android:background="@drawable/orange_rounded_corner"
+        android:onClick="goAgain"
+        android:text="PLAYAGAIN"
+        tools:layout_editor_absoluteX="264dp"
+        tools:layout_editor_absoluteY="472dp" />
+</RelativeLayout>
