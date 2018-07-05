@@ -27,7 +27,8 @@
         android:layout_marginBottom="81dp"
         android:text="TextView"
         tools:layout_editor_absoluteX="124dp"
-        tools:layout_editor_absoluteY="303dp" />
+        tools:layout_editor_absoluteY="303dp"
+        tools:textColor="@android:color/background_light" />
 
     <TextView
         android:id="@+id/textView3"
@@ -98,4 +99,14 @@
         android:text="PLAYAGAIN"
         tools:layout_editor_absoluteX="264dp"
         tools:layout_editor_absoluteY="472dp" />
+
+    <TextView
+        android:id="@+id/coinss"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textView3"
+        android:layout_marginTop="-23dp"
+        android:text="TextView"
+        tools:textColor="@android:color/background_light" />
 </RelativeLayout>
