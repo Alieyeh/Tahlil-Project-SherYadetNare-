@@ -1,17 +1,13 @@
 package com.example.alieyeh.appy;
 
-import android.app.Instrumentation;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -21,17 +17,13 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.Locale;
-import java.util.Random;
 
 
 public class SongNameActivity extends AppCompatActivity {
     private static final long TIMER_IN_MILLIS = 10000;
     private final long TIME_TO_SHOW_ANSWER = 1000;
-    private int songNameScore = StartingScreenActivity.songNameCoins;
+    private int songNameScore = StartingScreenActivity.songNameHighScore;
     private TextView answ;
     private RadioGroup rbGroup;
     private RadioButton rb1;
@@ -40,7 +32,9 @@ public class SongNameActivity extends AppCompatActivity {
     private RadioButton rb4;
     private RadioButton rb[];
     TextView timerTextView;
+    TextView textViewCoin;
     private Button buttonSongNameScore;
+    private Button buttonCoin;
     private ImageButton help;
     private int part=1;
     private ColorStateList textColorTimer;
@@ -64,15 +58,15 @@ public class SongNameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_song_name);
         buttonSongNameScore = (Button) findViewById(R.id.scoreImg);
         timerTextView = (TextView) findViewById(R.id.text_view_timer);
-
+        songNameScore=0;
         answ = (TextView) findViewById(R.id.ans);
         rbGroup = (RadioGroup) findViewById(R.id.radiogroupp);
         rb1 = (RadioButton) findViewById(R.id.option1);
         rb2 = (RadioButton) findViewById(R.id.option2);
         rb3 = (RadioButton) findViewById(R.id.option3);
         rb4 = (RadioButton) findViewById(R.id.option4);
-
-
+        textViewCoin =findViewById(R.id.coin);
+        textViewCoin.setText(StartingScreenActivity.coin+"");
         textColorRadioButton = rb1.getTextColors();
         textColorTimer = timerTextView.getTextColors();
         context = this;
@@ -109,7 +103,9 @@ public class SongNameActivity extends AppCompatActivity {
         timeLeftInMillis = TIMER_IN_MILLIS;
         count = 0;
         musicManager.Stop();
-        if(part==7){
+        if(part==3){
+            if(songNameScore>StartingScreenActivity.songNameHighScore)
+                sendScoreToMenu();
             part=1;
 
             RoundActivity.type=2;
@@ -136,9 +132,10 @@ public class SongNameActivity extends AppCompatActivity {
         int selectedRbNum = rbGroup.indexOfChild(rbSelected);
         boolean correct = mc.checkAnswer(selectedRbNum);
         if (correct) {
-            songNameScore++;
+            songNameScore+=10*(int)(timeLeftInMillis/1000);
+            StartingScreenActivity.coin++;
             buttonSongNameScore.setText(songNameScore + "");
-            sendScoreToMenu();
+            textViewCoin.setText(StartingScreenActivity.coin+"");
             Toast.makeText(this, "باریکلا !", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "واه واه :(", Toast.LENGTH_SHORT).show();
@@ -146,7 +143,6 @@ public class SongNameActivity extends AppCompatActivity {
         }
 
         showRightAnswer();
-        sendScoreToMenu();
     }
     private void showRightAnswer() {
 
@@ -311,7 +307,8 @@ public class SongNameActivity extends AppCompatActivity {
 
     public void onDestroy() {
         super.onDestroy();
-        musicManager.song.release();
+        if(musicManager.song!=null)
+            musicManager.song.release();
         if (countDownTimer != null) {
             countDownTimer.cancel();
         }
@@ -323,9 +320,9 @@ public class SongNameActivity extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.one:
-                        if (songNameScore >= 10) {
-                            songNameScore -= 10;
-                            buttonSongNameScore.setText(songNameScore + "");
+                        if (StartingScreenActivity.coin >= 10) {
+                            StartingScreenActivity.coin -= 10;
+                            buttonCoin.setText(StartingScreenActivity.coin + "");
 
                             helpMe.omitAns(1,ansnum);
                             for (int i = 0; i < 1; i++) {
@@ -354,9 +351,9 @@ public class SongNameActivity extends AppCompatActivity {
                             Toast.makeText(SongNameActivity.this, "حداقل 10 تا سکه میخوای !", Toast.LENGTH_SHORT).show();
                         return true;
                     case R.id.two:
-                        if (songNameScore >= 20) {
-                            songNameScore -= 20;
-                            buttonSongNameScore.setText(songNameScore + "");
+                        if (StartingScreenActivity.coin >= 20) {
+                            StartingScreenActivity.coin -= 20;
+                            buttonCoin.setText(StartingScreenActivity.coin + "");
 
                             helpMe.omitAns(2,ansnum);
                             switch (helpMe.omittedAns1) {
@@ -402,10 +399,10 @@ public class SongNameActivity extends AppCompatActivity {
                         return true;
                     case R.id.three:
 
-                        if (songNameScore >= 30) {
-                            songNameScore -= 30;
+                        if (StartingScreenActivity.coin >= 30) {
+                            StartingScreenActivity.coin -= 30;
 
-                            buttonSongNameScore.setText(songNameScore + "");
+                            buttonCoin.setText(StartingScreenActivity.coin + "");
                             switch (ansnum) {
                                 case 0:
                                     rb1.setChecked(true);
@@ -446,4 +443,3 @@ public class SongNameActivity extends AppCompatActivity {
 
 
 }
-
