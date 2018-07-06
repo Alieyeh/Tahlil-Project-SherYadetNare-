@@ -1,4 +1,4 @@
-package com.example.nazanin_sarrafzadeh.sheroyadete;
+package com.example.nazanin_sarrafzadeh.faze4;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -8,8 +8,10 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.PopupMenu;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
@@ -27,7 +29,7 @@ public class LyricsJumbleActivity extends AppCompatActivity {
 
     private ArrayList<String> answerTextViews=new ArrayList<>();
     private ArrayList<TextView> showableTextviews=new ArrayList<>();
-    private boolean undoAnswer=false,gotHelp=false;
+    private boolean undoAnswer=false,gotMoreTime=false,gotHelp=false;
     private ArrayList<Button> mButtons;
     private String originalText="";
     private SeekBar seekBar;
@@ -39,7 +41,7 @@ public class LyricsJumbleActivity extends AppCompatActivity {
     private Runnable restart;
     private ArrayList<Button> selections=new ArrayList<>();
     private TextView timer,correctAnswer,beforeGame,answerField,selectedView;
-    private int count=0,countSize=0,numOfChangableViews=0,LyricsJumbleScore= StartingScreenActivity.JumbleLyricHighscore;
+    private int number,count=0,countSize=0,numOfChangableViews=0,LyricsJumbleScore= StartingScreenActivity.JumbleLyricHighscore;
     public static final String EXTRA_SCORE1 = "lyricJumbleExtraScore";
     private static final int COUNTDOWN_BEFORE_STARTING=4000,COUNTDOWN_WHILE_PLAYING=16000;
     private CountDownTimer whilePlaying;
@@ -48,6 +50,8 @@ public class LyricsJumbleActivity extends AppCompatActivity {
     private MusicManager music;
     private GridView gridView,gridTextView;
     private GameDbHelper gameDbHelper;
+    private Help whichWord;
+    private static final int REQUEST_NUMBER=1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +60,7 @@ public class LyricsJumbleActivity extends AppCompatActivity {
         help= (ImageButton)findViewById(R.id.help);
         timerhelp=(ImageButton)findViewById(R.id.timerHelp);
         music=new MusicManager(seekBar);
+        whichWord=new Help();
         waitForColoring=new Handler();
         gameDbHelper=new GameDbHelper(this);
         correctAnswer=(TextView)findViewById(R.id.correctAnswer);
@@ -142,7 +147,7 @@ public class LyricsJumbleActivity extends AppCompatActivity {
 
 
     private void countWhilePlaying(){
-        gotHelp=false;
+        gotMoreTime=false;
         whilePlaying= new CountDownTimer(timeLeftToFinish, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -240,7 +245,7 @@ public class LyricsJumbleActivity extends AppCompatActivity {
         for (int i = 0; i < withoutSpaces.length; i++) {
             cb = new Button(this);
             cb.setText(withoutSpaces[i]);
-            cb.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 25);
+            cb.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
             cb.setBackgroundResource(R.drawable.words);
             cb.setId(i);
             selectedStates=new int[withoutSpaces.length];
@@ -256,7 +261,8 @@ public class LyricsJumbleActivity extends AppCompatActivity {
                         countSize++;
                     }
 
-                    answerCycle();
+                    int index=selection.getId();
+                    answerCycle(index);
                 }
             });
             mButtons.add(cb);
@@ -266,14 +272,25 @@ public class LyricsJumbleActivity extends AppCompatActivity {
         gridView.setAdapter(new ButtonGrid(mButtons));
     }
 
-    private void answerCycle(){
-        int index=selection.getId();
+    private void answerCycle(int index){
+      //  int index=selection.getId();
 
         if (selectedStates[index]==0){
             selectedStates[index]=1;
             for (int i = 0; i <countSize ; i++) {
-
-                if (undoAnswer == true && answerTextViews.get(i) == "") {
+                if (undoAnswer==true && gotHelp==true){
+                    numOfChangableViews--;
+                    if (numOfChangableViews==0){
+                        undoAnswer=false;
+                    }
+                    answerTextViews.set(i,(String) mButtons.get(index).getText());
+                    showableTextviews.get(number).setText(answerTextViews.get(i));
+                    //   Toast.makeText(LyricsJumbleActivity.this,String.valueOf(i),Toast.LENGTH_SHORT).show();
+                    mButtons.get(index).setBackgroundResource(R.drawable.select);
+                    gotHelp=false;
+                    break;
+                }
+                else if (undoAnswer == true && answerTextViews.get(i) == "") {
                     numOfChangableViews--;
                     if (numOfChangableViews==0){
                         undoAnswer=false;
@@ -282,19 +299,32 @@ public class LyricsJumbleActivity extends AppCompatActivity {
                     showableTextviews.get(i).setText(answerTextViews.get(i));
                     selection.setBackgroundResource(R.drawable.select);
                     break;
-                } else if (showableTextviews.get(i).getText() == "") {
+                }
+                else if (showableTextviews.get(i).getText() == "") {
+                    if (gotHelp==true){
+                        answerTextViews.add(i,(String) mButtons.get(index).getText());
+                        showableTextviews.get(number).setText(answerTextViews.get(i));
+                     //   Toast.makeText(LyricsJumbleActivity.this,String.valueOf(i),Toast.LENGTH_SHORT).show();
+                        mButtons.get(index).setBackgroundResource(R.drawable.select);
+                        gotHelp=false;
 
-                    answerTextViews.add(i,(String) selection.getText());
-                    showableTextviews.get(i).setText(answerTextViews.get(i));
-                    selection.setBackgroundResource(R.drawable.select);
-                    if (answerTextViews.size()==correctText.length) {
-                        gridTextView.setAdapter(null);
-                        if (checkAnswerState()) {
-                            displayWinnerState();
-                            break;
+                        break;
+                    }
+                    else {
+                        answerTextViews.add(i, (String) selection.getText());
+                        showableTextviews.get(i).setText(answerTextViews.get(i));
+                        selection.setBackgroundResource(R.drawable.select);
+                        if (answerTextViews.size() == correctText.length) {
+                            gridTextView.setAdapter(null);
+                            if (checkAnswerState()) {
+                                displayWinnerState();
+                                break;
+                            } else {
+                                displayLooserState();
+                                break;
+                            }
                         }
                         else {
-                            displayLooserState();
                             break;
                         }
                     }
@@ -302,6 +332,8 @@ public class LyricsJumbleActivity extends AppCompatActivity {
             }
         }
     }
+
+
 
     private boolean checkAnswerState(){
         if (Arrays.equals(answerTextViews.toArray(),correctText))
@@ -353,7 +385,7 @@ public class LyricsJumbleActivity extends AppCompatActivity {
 
     private void playAgain(){
         //reset everything
-       music.checkForFreeze();
+        music.checkForFreeze();
         mButtons.clear();
         showableTextviews.clear();
         gridView.setAdapter(null);
@@ -363,14 +395,16 @@ public class LyricsJumbleActivity extends AppCompatActivity {
         correctAnswer.setText(null);
         count=0;
         undoAnswer=false;
-        gotHelp=false;
+        gotMoreTime=false;
         timeLeftToFinish=COUNTDOWN_WHILE_PLAYING;
         timer.setText("00:15");
         timer.setTextColor(textColorDefaultCD);
+        timerhelp.setEnabled(false);
         help.setEnabled(false);
         play.setEnabled(false);
         stop.setEnabled(false);
         replay.setEnabled(false);
+        timerhelp.setVisibility(View.GONE);
         play.setVisibility(View.GONE);
         stop.setVisibility(View.GONE);
         replay.setVisibility(View.GONE);
@@ -386,7 +420,7 @@ public class LyricsJumbleActivity extends AppCompatActivity {
     }
 
     public void giveMeMoreTime(View view){
-        gotHelp=true;
+        gotMoreTime=true;
         if (LyricsJumbleScore>=3) {
             LyricsJumbleScore -= 3;
             score.setText(""+LyricsJumbleScore);
@@ -401,20 +435,49 @@ public class LyricsJumbleActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        int matchNumberWithButtons = 0;
+        if (requestCode==REQUEST_NUMBER) {
+            if (resultCode == LyricsHelpMenu.RESULT_OK) {
+                number = data.getIntExtra(LyricsHelpMenu.NUMBER, 0);
+                countSize++;
+                for (int i = 0; i <withoutSpaces.length ; i++) {
+                    if (mButtons.get(i).getText().equals(correctText[number])){
+
+                        selections.add(mButtons.get(i));
+                        matchNumberWithButtons=i;
+                        break;
+                    }
+                }
+                answerCycle(matchNumberWithButtons);
+            }
+        }
+    }
+
+
     public void helpMe(View view){
-//        gotHelp=true;
-//        if (LyricsJumbleScore>=3) {
-//            LyricsJumbleScore -= 3;
-//            score.setText(""+LyricsJumbleScore);
-//            sendScoreToMenue();
-//            whilePlaying.cancel();
-//            timeLeftToFinish = COUNTDOWN_WHILE_PLAYING;
-//            timer.setTextColor(textColorDefaultCD);
-//            countWhilePlaying();
-//        }
-//        else {
-//            Toast.makeText(LyricsJumbleActivity.this,"سکه هات کافی نیس :)",Toast.LENGTH_SHORT).show();
-//        }
+        gotHelp=true;
+        PopupMenu popup = new PopupMenu(LyricsJumbleActivity.this, help);
+        popup.getMenuInflater().inflate(R.menu.help_menu, popup.getMenu());
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.one:
+                        Intent intent = new Intent(LyricsJumbleActivity.this, LyricsHelpMenu.class);
+                        intent.putExtra("numberOfWords", withoutSpaces.length);
+                        startActivityForResult(intent, REQUEST_NUMBER);
+                        break;
+                    case R.id.two:
+                        playAgain();
+                        break;
+                }
+                return true;
+            }
+        });
+        popup.show();
 
     }
 
