@@ -16,6 +16,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +32,8 @@ public class LyricsJumbleActivity extends AppCompatActivity {
     private ArrayList<String> answerTextViews=new ArrayList<>();
     private ArrayList<TextView> showableTextviews=new ArrayList<>();
     private boolean undoAnswer=false,gotMoreTime=false,gotHelp=false;
+    static int lyricJumbleScore;
+    public static final String EXTRA_SCORE3 = "lyricJumbleExtraScore";
     private ArrayList<Button> mButtons;
     private String originalText="";
     private SeekBar seekBar;
@@ -52,6 +56,9 @@ public class LyricsJumbleActivity extends AppCompatActivity {
     private GameDbHelper gameDbHelper;
     private Help whichWord;
     private static final int REQUEST_NUMBER=1;
+    private  TextView ansPerSet;
+    private ArrayList<TextView> fields=new ArrayList<>();
+    private int part = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,9 +92,33 @@ public class LyricsJumbleActivity extends AppCompatActivity {
         replay.setVisibility(View.GONE);
         timeLeftToStart=COUNTDOWN_BEFORE_STARTING;
 
+        displayQuestionPerSet();
         startGame();
       //  CountBeforeStarting();
 
+    }
+
+    private void displayQuestionPerSet(){
+        LinearLayout answer_layout = (LinearLayout)findViewById(R.id.ansfield);
+
+        for(int i = 0 ; i<3; i++)
+        {
+            ansPerSet= new TextView(this);
+            ansPerSet.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            ansPerSet.setBackgroundResource(R.drawable.ans_per_set);
+            ansPerSet.setId(i);
+            ansPerSet.setWidth(50);
+            ansPerSet.setHeight(50);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT
+            );
+            params.setMargins(10, 10,10, 10);
+            ansPerSet.setLayoutParams(params);
+            fields.add(ansPerSet);
+            answer_layout.addView(ansPerSet);
+
+        }
     }
 
 
@@ -353,6 +384,7 @@ public class LyricsJumbleActivity extends AppCompatActivity {
             showAnswer();
         }
      //
+        fields.get(part-1).setBackgroundResource(R.drawable.red_per_set);
         whilePlaying.cancel();
        music.checkForFreeze();
         restart=new Runnable() {
@@ -369,6 +401,7 @@ public class LyricsJumbleActivity extends AppCompatActivity {
             s.setBackgroundResource(R.drawable.win);
             showAnswer();
         }
+        fields.get(part-1).setBackgroundResource(R.drawable.green_per_set);
         LyricsJumbleScore+=5;
         score.setText(""+LyricsJumbleScore);
         sendScoreToMenue();
@@ -385,31 +418,51 @@ public class LyricsJumbleActivity extends AppCompatActivity {
 
     private void playAgain(){
         //reset everything
-        music.checkForFreeze();
-        mButtons.clear();
-        showableTextviews.clear();
-        gridView.setAdapter(null);
-        answerTextViews.clear();
-        countSize=0;
-        numOfChangableViews=0;
-        correctAnswer.setText(null);
-        count=0;
-        undoAnswer=false;
-        gotMoreTime=false;
-        timeLeftToFinish=COUNTDOWN_WHILE_PLAYING;
-        timer.setText("00:15");
-        timer.setTextColor(textColorDefaultCD);
-        timerhelp.setEnabled(false);
-        help.setEnabled(false);
-        play.setEnabled(false);
-        stop.setEnabled(false);
-        replay.setEnabled(false);
-        timerhelp.setVisibility(View.GONE);
-        play.setVisibility(View.GONE);
-        stop.setVisibility(View.GONE);
-        replay.setVisibility(View.GONE);
-        startGame();
 
+        if (part == 3) {
+            //if (songNameScore > StartingScreenActivity.songNameHighScore) {
+            sendScoreToMenu();
+            //}
+            part = 1;
+            RoundActivity.type = 3;
+            RoundActivity.currentScore = lyricJumbleScore;
+            Intent intent = new Intent(LyricsJumbleActivity.this, RoundActivity.class);
+            startActivity(intent);
+            finish();
+        } else {
+            music.checkForFreeze();
+            mButtons.clear();
+            showableTextviews.clear();
+            gridView.setAdapter(null);
+            answerTextViews.clear();
+            countSize=0;
+            numOfChangableViews=0;
+            correctAnswer.setText(null);
+            count=0;
+            undoAnswer=false;
+            gotMoreTime=false;
+            timeLeftToFinish=COUNTDOWN_WHILE_PLAYING;
+            timer.setText("00:15");
+            timer.setTextColor(textColorDefaultCD);
+            timerhelp.setEnabled(false);
+            help.setEnabled(false);
+            play.setEnabled(false);
+            stop.setEnabled(false);
+            replay.setEnabled(false);
+            timerhelp.setVisibility(View.GONE);
+            play.setVisibility(View.GONE);
+            stop.setVisibility(View.GONE);
+            replay.setVisibility(View.GONE);
+            startGame();
+            part++;
+        }
+
+    }
+
+    private void sendScoreToMenu() {
+        Intent resultIntent = new Intent(LyricsJumbleActivity.this,StartingScreenActivity.class);
+        resultIntent.putExtra(EXTRA_SCORE3, lyricJumbleScore);
+        setResult(RESULT_OK, resultIntent);
     }
 
 
