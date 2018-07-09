@@ -1,10 +1,11 @@
-package com.example.nazanin_sarrafzadeh.faze4;
-////
+package com.example.alieyeh.appy;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -13,8 +14,10 @@ public class RoundActivity extends AppCompatActivity {
     Button toMenu;
     Button toGenre;
     static int type;
-    static int currentScore;
-    TextView textViewScore,textViewCoinsss;
+    static int currentScore, highScr;
+    static boolean newHighScore = false;
+    ImageView goldenCup;
+    TextView textViewScore, textViewHighScore, textViewNewHighScore;
 
     private static final int REQUEST_CODE_QUIZ = 1;
     private static final int REQUEST_CODE_QUIZ2 = 2;
@@ -27,11 +30,22 @@ public class RoundActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_round);
-        toAgain =(Button) findViewById(R.id.goPlay);
-        toMenu =(Button) findViewById(R.id.goMenu);
-        toGenre =(Button) findViewById(R.id.goGenre);
-        textViewScore =(TextView) findViewById(R.id.score);
-        textViewScore.setText(currentScore+" ");
+        toAgain = (Button) findViewById(R.id.goPlay);
+        toMenu = (Button) findViewById(R.id.goMenu);
+        toGenre = (Button) findViewById(R.id.goGenre);
+        textViewScore = (TextView) findViewById(R.id.score);
+        goldenCup = findViewById(R.id.goldCup);
+        textViewScore.setText(currentScore + " ");
+        textViewNewHighScore = findViewById(R.id.newHighScore);
+        textViewHighScore = findViewById(R.id.highscore);
+        textViewHighScore.setText(highScr + "");
+
+        textViewNewHighScore.setVisibility(View.INVISIBLE);
+        goldenCup.setVisibility(View.INVISIBLE);
+        if (newHighScore) {
+            goldenCup.setVisibility(View.VISIBLE);
+            textViewNewHighScore.setVisibility(View.VISIBLE);
+        }
 
     }
 
@@ -56,33 +70,30 @@ public class RoundActivity extends AppCompatActivity {
     }
 
 
-    private void sendSongNameScoreToMenu() {
+    private void sendCurrentScoreToMenu() {
+        Toast.makeText(RoundActivity.this, String.valueOf(currentScore), Toast.LENGTH_SHORT).show();
         Intent resultIntent = new Intent(RoundActivity.this, StartingScreenActivity.class);
-        resultIntent.putExtra(EXTRA_SCORE10,currentScore );
+        resultIntent.putExtra(EXTRA_SCORE10, currentScore);
         setResult(RESULT_OK, resultIntent);
-        Toast.makeText(RoundActivity.this,String.valueOf(currentScore),Toast.LENGTH_SHORT).show();
-
+        newHighScore = false;
         finish();
 
     }
-//    private void sendLyricJumbleScoreToMenu() {
-//        Intent resultIntent = new Intent();
-//        resultIntent.putExtra(EXTRA_SCORE3, songNameScore);
-//        setResult(RESULT_OK, resultIntent);
-//    }
 
     public void goToMenu(final View view) {
-
-        sendSongNameScoreToMenu();
-
-
+        sendCurrentScoreToMenu();
     }
 
     public void goToGenre(final View view) {
+        sendCurrentScoreToMenu();
+        Intent intent = new Intent(RoundActivity.this, GenreActivity.class);
+        startActivity(intent);
+        finish();
 
     }
 
     public void goAgain(final View view) {
+        newHighScore = false;
         finish();
         Intent intent;
         switch (type) {
@@ -101,268 +112,11 @@ public class RoundActivity extends AppCompatActivity {
         }
     }
 
-////import android.content.Intent;
-////import android.os.Bundle;
-////import android.support.v7.app.AppCompatActivity;
-////import android.view.View;
-////import android.widget.Button;
-////import android.widget.TextView;
-//package com.example.nazanin_sarrafzadeh.faze4;
-//
-//import android.content.Intent;
-//import android.os.Bundle;
-//import android.support.v7.app.AppCompatActivity;
-//import android.view.View;
-//import android.widget.Button;
-//import android.widget.TextView;
-//import android.widget.Toast;
-//
-//public class RoundActivity extends AppCompatActivity {
-//    Button toAgain;
-//    Button toMenu;
-//    Button toGenre;
-//    static int type;
-//    static int currentScore;
-//    TextView textViewScore,textViewCoinsss;
-//
-//    private static final int REQUEST_CODE_QUIZ = 1;
-//    private static final int REQUEST_CODE_QUIZ2 = 2;
-//    private static final int REQUEST_CODE_QUIZ3 = 3;
-//    private static final int REQUEST_CODE_Coin = 10;
-//
-//    public static final String EXTRA_SCORE10 = "highScore";
-//
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_round);
-//        toAgain =(Button) findViewById(R.id.goPlay);
-//        toMenu =(Button) findViewById(R.id.goMenu);
-//        toGenre =(Button) findViewById(R.id.goGenre);
-//        textViewScore =(TextView) findViewById(R.id.score);
-//        textViewScore.setText(currentScore+" ");
-//        // textViewCoinsss=findViewById(R.id.coinss);
-//        //textViewCoinsss.setText();
-//        //    sendSongNameScoreToMenu();
-//    }
-//
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        if (requestCode == REQUEST_CODE_QUIZ) {
-//            if (resultCode == LyricsJumbleActivity.RESULT_OK) {
-//                StartingScreenActivity.JumbleLyricHighscore = data.getIntExtra(LyricsJumbleActivity.EXTRA_SCORE1, 0);
-//
-//            }
-//        } else if (requestCode == REQUEST_CODE_QUIZ2) {
-//            if (resultCode == SingerNameActivity.RESULT_OK) {
-//                StartingScreenActivity.singerNameHighScore = data.getIntExtra(SingerNameActivity.EXTRA_SCORE2, 0);
-//            }
-//        } else if (requestCode == REQUEST_CODE_QUIZ3) {
-//            if (resultCode == SongNameActivity.RESULT_OK) {
-//                StartingScreenActivity.songNameHighScore = data.getIntExtra(SongNameActivity.EXTRA_SCORE3, 0);
-//            }
-//
-//        }
-//    }
-//
-//
-//    private void sendSongNameScoreToMenu() {
-//        Intent resultIntent = new Intent(RoundActivity.this, StartingScreenActivity.class);
-//        resultIntent.putExtra(EXTRA_SCORE10,currentScore );
-//        setResult(RESULT_OK, resultIntent);
-//        Toast.makeText(RoundActivity.this,String.valueOf(currentScore),Toast.LENGTH_SHORT).show();
-//
-//        finish();
-////        Intent resultIntent = new Intent();
-////        resultIntent.putExtra(EXTRA_SCORE10,currentScore );
-////        setResult(RESULT_OK, resultIntent);
-//    }
-////    private void sendLyricJumbleScoreToMenu() {
-////        Intent resultIntent = new Intent();
-////        resultIntent.putExtra(EXTRA_SCORE3, songNameScore);
-////        setResult(RESULT_OK, resultIntent);
-////    }
-//
-//    public void goToMenu(final View view) {
-////        Intent intent=new Intent(RoundActivity.this,StartingScreenActivity.class);
-////        startActivity(intent);
-////        switch (type){
-////            case 2:
-////                if(currentScore>StartingScreenActivity.songNameHighScore){
-////                    sendSongNameScoreToMenu();
-////                }
-//        //    finishActivity(REQUEST_CODE_QUIZ2);
-//        //   finish();
-////     //   }
-////        Intent intent=new Intent(RoundActivity.this,StartingScreenActivity.class);
-////        startActivity(intent);
-//
-//        sendSongNameScoreToMenu();
-//
-//        //   sendSongNameScoreToMenu();
-////        Intent resultIntent = new Intent();
-////        resultIntent.putExtra(EXTRA_SCORE3, songNameScore);
-////        setResult(RESULT_OK, resultIntent);
-//        //     startActivityForResult(resultIntent, REQUEST_CODE_QUIZ2);
-//        //    finish();
-//
-//    }
-//
-//    public void goToGenre(final View view) {
-//        //Intent intent=new Intent(RoundActivity.this,Genre.class);
-//        //startActivity(intent);
-//    }
-//
-//    public void goAgain(final View view) {
-//        finish();
-//        Intent intent;
-//        switch (type) {
-//            case 1:
-//                intent = new Intent(RoundActivity.this, SingerNameActivity.class);
-//                startActivity(intent);
-//                break;
-//            case 2:
-//                intent = new Intent(RoundActivity.this, SongNameActivity.class);
-//                startActivity(intent);
-//                break;
-//            case 3:
-//                intent = new Intent(RoundActivity.this, LyricsJumbleActivity.class);
-//                startActivity(intent);
-//                break;
-//        }
-//    }
-//
-////    @Override
-////    protected void onDestroy() {
-////        super.onDestroy();
-////        sendSongNameScoreToMenu();
-////    }
-//}
-////import android.widget.Toast;
-////
-////public class RoundActivity extends AppCompatActivity {
-////    Button toAgain;
-////    Button toMenu;
-////    Button toGenre;
-////    static int type;
-////    int currentScore;
-////    TextView textViewScore,textViewCoinsss;
-////
-////    private static final int REQUEST_CODE_QUIZ = 1;
-////    private static final int REQUEST_CODE_QUIZ2 = 2;
-////    private static final int REQUEST_CODE_QUIZ3 = 3;
-////    private static final int REQUEST_CODE_Coin = 10;
-////
-////    public static final String EXTRA_SCORE10 = "highScore";
-////
-////    @Override
-////    protected void onCreate(Bundle savedInstanceState) {
-////        super.onCreate(savedInstanceState);
-////        setContentView(R.layout.activity_round);
-////        toAgain =(Button) findViewById(R.id.goPlay);
-////        toMenu =(Button) findViewById(R.id.goMenu);
-////        toGenre =(Button) findViewById(R.id.goGenre);
-////        textViewScore =(TextView) findViewById(R.id.score);
-////        Intent intent=getIntent();
-////        currentScore=intent.getIntExtra("currentScore",0);
-////        textViewScore.setText(currentScore+" ");
-////       // textViewCoinsss=findViewById(R.id.coinss);
-////        //textViewCoinsss.setText();
-////    //    sendSongNameScoreToMenu();
-////    }
-////
-////    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-////        super.onActivityResult(requestCode, resultCode, data);
-////
-////        if (requestCode == REQUEST_CODE_QUIZ) {
-////            if (resultCode == LyricsJumbleActivity.RESULT_OK) {
-////                StartingScreenActivity.JumbleLyricHighscore = data.getIntExtra(LyricsJumbleActivity.EXTRA_SCORE1, 0);
-////
-////            }
-////        } else if (requestCode == REQUEST_CODE_QUIZ2) {
-////            if (resultCode == SingerNameActivity.RESULT_OK) {
-////                StartingScreenActivity.singerNameHighScore = data.getIntExtra(SingerNameActivity.EXTRA_SCORE2, 0);
-////            }
-////        } else if (requestCode == REQUEST_CODE_QUIZ3) {
-////            if (resultCode == SongNameActivity.RESULT_OK) {
-////                StartingScreenActivity.songNameHighScore = data.getIntExtra(SongNameActivity.EXTRA_SCORE3, 0);
-////            }
-////
-////        }
-////    }
-////
-////
-////    private void sendSongNameScoreToMenu() {
-////        Intent resultIntent = new Intent(RoundActivity.this, StartingScreenActivity.class);
-////        resultIntent.putExtra(EXTRA_SCORE10,currentScore );
-////        setResult(RESULT_OK, resultIntent);
-////        Toast.makeText(RoundActivity.this,String.valueOf(currentScore),Toast.LENGTH_SHORT).show();
-////
-////        finish();
-//////        Intent resultIntent = new Intent();
-//////        resultIntent.putExtra(EXTRA_SCORE10,currentScore );
-//////        setResult(RESULT_OK, resultIntent);
-////    }
-//////    private void sendLyricJumbleScoreToMenu() {
-//////        Intent resultIntent = new Intent();
-//////        resultIntent.putExtra(EXTRA_SCORE3, songNameScore);
-//////        setResult(RESULT_OK, resultIntent);
-//////    }
-////
-////    public void goToMenu(final View view) {
-//////        Intent intent=new Intent(RoundActivity.this,StartingScreenActivity.class);
-//////        startActivity(intent);
-//////        switch (type){
-//////            case 2:
-//////                if(currentScore>StartingScreenActivity.songNameHighScore){
-//////                    sendSongNameScoreToMenu();
-//////                }
-////            //    finishActivity(REQUEST_CODE_QUIZ2);
-////             //   finish();
-//////     //   }
-//////        Intent intent=new Intent(RoundActivity.this,StartingScreenActivity.class);
-//////        startActivity(intent);
-////
-////      sendSongNameScoreToMenu();
-////
-////     //   sendSongNameScoreToMenu();
-//////        Intent resultIntent = new Intent();
-//////        resultIntent.putExtra(EXTRA_SCORE3, songNameScore);
-//////        setResult(RESULT_OK, resultIntent);
-////       //     startActivityForResult(resultIntent, REQUEST_CODE_QUIZ2);
-////    //    finish();
-////
-////    }
-////
-////    public void goToGenre(final View view) {
-////        //Intent intent=new Intent(RoundActivity.this,Genre.class);
-////        //startActivity(intent);
-////    }
-////
-////    public void goAgain(final View view) {
-////        finish();
-////        Intent intent;
-////        switch (type) {
-////            case 1:
-////                intent = new Intent(RoundActivity.this, SingerNameActivity.class);
-////                startActivity(intent);
-////                break;
-////            case 2:
-////                intent = new Intent(RoundActivity.this, SongNameActivity.class);
-////                startActivity(intent);
-////                break;
-////            case 3:
-////                intent = new Intent(RoundActivity.this, LyricsJumbleActivity.class);
-////                startActivity(intent);
-////                break;
-////        }
-////    }
-////
     @Override
     protected void onDestroy() {
         super.onDestroy();
-       // Toast.makeText(RoundActivity.this,String.valueOf(currentScore),Toast.LENGTH_SHORT).show();
-        sendSongNameScoreToMenu();
+        Toast.makeText(RoundActivity.this, String.valueOf(currentScore), Toast.LENGTH_SHORT).show();
+        sendCurrentScoreToMenu();
     }
+
 }
