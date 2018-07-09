@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/img"
+    tools:context=".GenreActivity">
+
+
+    <Button
+        android:id="@+id/khaz"
+        android:layout_width="213dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+
+        android:layout_marginTop="173dp"
+        android:background="@drawable/rounded_corner"
+        android:onClick="setGenre"
+        android:text="خز   D:" />
+
+    <Button
+        android:id="@+id/pop"
+        android:layout_width="217dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/rounded_corner"
+
+        android:onClick="setGenre"
+        android:text="پاپ" />
+
+    <Button
+        android:id="@+id/sonati"
+        android:layout_width="221dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="179dp"
+        android:background="@drawable/rounded_corner"
+
+        android:onClick="setGenre"
+        android:text="سنتی" />
+
+    <Button
+        android:id="@+id/titraj"
+        android:layout_width="226dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="92dp"
+        android:background="@drawable/rounded_corner"
+
+        android:onClick="setGenre"
+        android:text="تیتراژ" />
+
+    <TextView
+        android:id="@+id/textViewGenre"
+        android:layout_width="141dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="55dp"
+        android:text=" ژانرها"
+        android:textColor="@android:color/holo_green_light"
+        android:textSize="50dp" />
+
+</RelativeLayout>
