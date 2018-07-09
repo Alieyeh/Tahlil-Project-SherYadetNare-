@@ -8,9 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Created by Accounting on 6/6/2018.
+ */
 
-
-public class MultipleChoice  {
+public class MultipleChoice {
     GameDbHelper gameDbHelper;
     public int randomRow;
     int ansnum;
@@ -18,13 +20,30 @@ public class MultipleChoice  {
     List options = new ArrayList();
     Random random;
     private boolean answered;
+    List currentRoundMusics = new ArrayList();
+    boolean setMusic = true;
+    int sets=5;
 
 
-    void startA(Context context) {
+    void start(Context context, int genre) {
         gameDbHelper = new GameDbHelper(context);
-        randomRow=MusicManager.randomRow;
-        gameDbHelper.giveTheSong(randomRow);
+        setMusic=false;
+        //if (currentRoundMusics.size() < sets) {
 
+                randomRow = MusicManager.randomRow;
+               // if (!currentRoundMusics.contains(randomRow)) {
+                    //currentRoundMusics.add(randomRow);
+                    gameDbHelper.giveTheSong(randomRow, genre);
+                    //setMusic = true;
+
+               // }
+
+//            else {
+//
+//            }
+//        } else if (currentRoundMusics.size() == 10) {
+//            currentRoundMusics.clear();
+//        }
         ansnum = generateRandomAnsNum();
         answered = false;
 
@@ -41,36 +60,64 @@ public class MultipleChoice  {
     }
 
 
-
-
     private int generateRandomAnsNum() {
         random = new Random();
         return random.nextInt(4);
     }
 
-    String makeSongNameOptions() {
+    String makeSongNameOptions(int genre) {
         options.clear();
-        rightAnswer = gameDbHelper.giveTheSongName(randomRow);
-        int randOption;
+        rightAnswer = gameDbHelper.giveTheSongName(randomRow, SongNameActivity.genre);
+        int randOption = 1;
         while (options.size() < 3) {
             random = new Random();
-            randOption = random.nextInt(59) + 1;
-            if (!options.contains(gameDbHelper.giveTheSongName(randOption)) && randOption!=randomRow) {
-                options.add(gameDbHelper.giveTheSongName(randOption));
+            switch (genre) {
+                case 1:
+                    randOption = random.nextInt(FileManager.khazCount) + 1;
+                    break;
+                case 2:
+                    randOption = random.nextInt(FileManager.popCount) + 1;
+                    break;
+                case 3:
+                    randOption = random.nextInt(FileManager.sonatiCount) + 1;
+                    break;
+                case 4:
+                    randOption = random.nextInt(FileManager.titrajCount) + 1;
+                    break;
+            }
+
+
+            if (!options.contains(gameDbHelper.giveTheSongName(randOption, SongNameActivity.genre)) && randOption != randomRow) {
+                options.add(gameDbHelper.giveTheSongName(randOption, SongNameActivity.genre));
             }
 
         }
         return rightAnswer;
     }
-    String makeSingerNameOptions() {
+
+    String makeSingerNameOptions(int genre) {
         options.clear();
-        rightAnswer = gameDbHelper.giveTheSinger(randomRow);
-        int randOption;
+        rightAnswer = gameDbHelper.giveTheSinger(randomRow, SingerNameActivity.genre);
+        int randOption = 1;
         while (options.size() < 3) {
             random = new Random();
-            randOption = random.nextInt(59) + 1;
-            if (!options.contains(gameDbHelper.giveTheSinger(randOption)) && randOption!=randomRow) {
-                options.add(gameDbHelper.giveTheSinger(randOption));
+            switch (genre) {
+                case 1:
+                    randOption = random.nextInt(FileManager.khazCount) + 1;
+                    break;
+                case 2:
+                    randOption = random.nextInt(FileManager.popCount) + 1;
+                    break;
+                case 3:
+                    randOption = random.nextInt(FileManager.sonatiCount) + 1;
+                    break;
+                case 4:
+                    randOption = random.nextInt(FileManager.titrajCount) + 1;
+                    break;
+            }
+
+            if (!options.contains(gameDbHelper.giveTheSinger(randOption, SingerNameActivity.genre)) && randOption != randomRow) {
+                options.add(gameDbHelper.giveTheSinger(randOption, SingerNameActivity.genre));
             }
 
         }
@@ -78,24 +125,4 @@ public class MultipleChoice  {
     }
 
 
-//    @Override
-//    public void onClick(View view) {
-//
-//        int selectedRaa=0;
-//        switch (view.getId()) {
-//            case R.id.option1:
-//                selectedRaa = 0;
-//                break;
-//            case R.id.option2:
-//                selectedRaa = 1;
-//                break;
-//            case R.id.option3:
-//                selectedRaa = 2;
-//                break;
-//            case R.id.option4:
-//                selectedRaa = 3;
-//                break;
-//        }
-//        checkAnswer(selectedRaa);
-//    }
 }
