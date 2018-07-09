@@ -21,10 +21,10 @@ import android.widget.Toast;
 import java.util.Locale;
 
 
-public class SingerNameActivity extends AppCompatActivity {
+public class SongNameActivity extends AppCompatActivity {
     private static final long TIMER_IN_MILLIS = 10000;
     private final long TIME_TO_SHOW_ANSWER = 1000;
-    static int singerNameScore;
+    static int songNameScore;
     private TextView answ;
     private Runnable restart;
     private Handler waitForColoring;
@@ -36,10 +36,11 @@ public class SingerNameActivity extends AppCompatActivity {
     private RadioButton rb[];
     TextView timerTextView;
     TextView textViewCoin;
-    private Button buttonSingerNameScore;
+    private Button buttonSongNameScore;
     private Button buttonCoin;
     private ImageButton help;
     private int part = 1;
+    static int genre=1;
     private ColorStateList textColorTimer;
     private ColorStateList textColorRadioButton;
     CountDownTimer countDownTimer;
@@ -48,29 +49,30 @@ public class SingerNameActivity extends AppCompatActivity {
     private long showAnsTimeLeft;
     static Context context;
     private int randomRow = 1, count = 0, pause;
-    public static final String EXTRA_SCORE2 = "songNameExtraScore";
-    public static final String EXTRA_SCORE22 = "CoinssExtraScore";
+    public static final String EXTRA_SCORE3 = "songNameExtraScore";
+    public static final String EXTRA_SCORE33 = "CoinssExtraScore";
     int ansnum;
     String ans = "";
     MultipleChoice mc = new MultipleChoice();
     MusicManager musicManager = new MusicManager();
+    static int randoooooommm;
     Help helpMe = new Help();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        waitForColoring=new Handler();
-        setContentView(R.layout.activity_singer_name);
-        buttonSingerNameScore = (Button) findViewById(R.id.scoreImg);
+        waitForColoring = new Handler();
+        setContentView(R.layout.activity_song_name);
+        buttonSongNameScore = (Button) findViewById(R.id.scoreImg);
         timerTextView = (TextView) findViewById(R.id.text_view_timer);
-        singerNameScore = 0;
+        songNameScore = 0;
         answ = (TextView) findViewById(R.id.ans);
         rbGroup = (RadioGroup) findViewById(R.id.radiogroupp);
         rb1 = (RadioButton) findViewById(R.id.option1);
         rb2 = (RadioButton) findViewById(R.id.option2);
         rb3 = (RadioButton) findViewById(R.id.option3);
         rb4 = (RadioButton) findViewById(R.id.option4);
-        textViewCoin = (TextView)findViewById(R.id.coin);
+        textViewCoin = (TextView) findViewById(R.id.coin);
         textViewCoin.setText(StartingScreenActivity.coin + "");
         textColorRadioButton = rb1.getTextColors();
         textColorTimer = timerTextView.getTextColors();
@@ -83,10 +85,11 @@ public class SingerNameActivity extends AppCompatActivity {
 
 
     private void startGame() {
+        //randoooooommm=musicManager.generateRandomId(genre);
         musicManager.playMusic(this);
-        mc.start(this);
+        mc.start(this,genre);
         randomRow = mc.randomRow;
-        buttonSingerNameScore.setText(singerNameScore + "");
+        buttonSongNameScore.setText(songNameScore + "");
         showOptions();
         showNextQuestion();
 
@@ -108,14 +111,19 @@ public class SingerNameActivity extends AppCompatActivity {
         timeLeftInMillis = TIMER_IN_MILLIS;
         count = 0;
         musicManager.Stop();
-        if (part == 3) {
-            //if (singerNameScore > StartingScreenActivity.songNameHighScore) {
-            sendScoreToMenu();
-            //}
+        if (part == mc.sets) {
+            if (songNameScore > StartingScreenActivity.songNameHighScore) {
+                RoundActivity.newHighScore = true;
+                RoundActivity.highScr = songNameScore;
+                sendScoreToMenu();
+            }else {
+                RoundActivity.highScr=StartingScreenActivity.songNameHighScore;
+            }
+
             part = 1;
-            RoundActivity.type = 1;
-            RoundActivity.currentScore = singerNameScore;
-            Intent intent = new Intent(SingerNameActivity.this, RoundActivity.class);
+            RoundActivity.type = 2;
+            RoundActivity.currentScore = songNameScore;
+            Intent intent = new Intent(SongNameActivity.this, RoundActivity.class);
             startActivity(intent);
             finish();
         } else {
@@ -137,10 +145,10 @@ public class SingerNameActivity extends AppCompatActivity {
         int selectedRbNum = rbGroup.indexOfChild(rbSelected);
         boolean correct = mc.checkAnswer(selectedRbNum);
         if (correct) {
-            singerNameScore += 10 * (int) (timeLeftInMillis / 1000);
+            songNameScore += 10 * (int) (timeLeftInMillis / 1000);
             StartingScreenActivity.coin++;
             sendCoinsToMenu();
-            buttonSingerNameScore.setText(singerNameScore + "");
+            buttonSongNameScore.setText(songNameScore + "");
             textViewCoin.setText(StartingScreenActivity.coin + "");
             Toast.makeText(this, "باریکلا !", Toast.LENGTH_SHORT).show();
         } else {
@@ -183,20 +191,20 @@ public class SingerNameActivity extends AppCompatActivity {
 
                 break;
         }
-        restart=new Runnable() {
+        restart = new Runnable() {
             @Override
             public void run() {
                 playAgain();
             }
         };
-        waitForColoring.postDelayed(restart,2000);
+        waitForColoring.postDelayed(restart, 2000);
 
 
     }
 
 
     private void showOptions() {
-        ans = mc.makeSingerNameOptions();
+        ans = mc.makeSongNameOptions(genre);
         ansnum = mc.ansnum;
         int possCount = 0;
 
@@ -289,7 +297,7 @@ public class SingerNameActivity extends AppCompatActivity {
         if (rb1.isChecked() || rb2.isChecked() || rb3.isChecked() || rb4.isChecked()) {
             checkAnswer();
         } else {
-            Toast.makeText(SingerNameActivity.this, "choose", Toast.LENGTH_SHORT).show();
+            Toast.makeText(SongNameActivity.this, "choose", Toast.LENGTH_SHORT).show();
         }
 //        } else {
 //            playAgain();
@@ -297,13 +305,14 @@ public class SingerNameActivity extends AppCompatActivity {
     }
 
     private void sendScoreToMenu() {
-        Intent resultIntent = new Intent(SingerNameActivity.this,StartingScreenActivity.class);
-        resultIntent.putExtra(EXTRA_SCORE2, singerNameScore);
+        Intent resultIntent = new Intent(SongNameActivity.this, StartingScreenActivity.class);
+        resultIntent.putExtra(EXTRA_SCORE3, songNameScore);
         setResult(RESULT_OK, resultIntent);
     }
+
     private void sendCoinsToMenu() {
         Intent resultIntent = new Intent();
-        resultIntent.putExtra(EXTRA_SCORE22, StartingScreenActivity.coin);
+        resultIntent.putExtra(EXTRA_SCORE33, StartingScreenActivity.coin);
         setResult(RESULT_OK, resultIntent);
     }
 
@@ -317,7 +326,7 @@ public class SingerNameActivity extends AppCompatActivity {
     }
 
     public void helpMe(final View view) {
-        PopupMenu popup = new PopupMenu(SingerNameActivity.this, help);
+        PopupMenu popup = new PopupMenu(SongNameActivity.this, help);
         popup.getMenuInflater().inflate(R.menu.help_menu2, popup.getMenu());
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
@@ -326,7 +335,7 @@ public class SingerNameActivity extends AppCompatActivity {
                         if (StartingScreenActivity.coin >= 10) {
                             StartingScreenActivity.coin -= 10;
                             //buttonCoin.setText(StartingScreenActivity.coin + "");
-                            textViewCoin.setText(StartingScreenActivity.coin+"");
+                            textViewCoin.setText(StartingScreenActivity.coin + "");
                             helpMe.omitAns(1, ansnum);
                             for (int i = 0; i < 1; i++) {
                                 switch (helpMe.omittedAns1) {
@@ -351,7 +360,7 @@ public class SingerNameActivity extends AppCompatActivity {
                             }
 
                         } else
-                            Toast.makeText(SingerNameActivity.this, "حداقل 10 تا سکه میخوای !", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SongNameActivity.this, "حداقل 10 تا سکه میخوای !", Toast.LENGTH_SHORT).show();
                         return true;
                     case R.id.two:
                         if (StartingScreenActivity.coin >= 20) {
@@ -398,7 +407,7 @@ public class SingerNameActivity extends AppCompatActivity {
                             }
 
                         } else
-                            Toast.makeText(SingerNameActivity.this, "حداقل 20 تا سکه میخوای !", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SongNameActivity.this, "حداقل 20 تا سکه میخوای !", Toast.LENGTH_SHORT).show();
                         return true;
                     case R.id.three:
 
@@ -432,10 +441,11 @@ public class SingerNameActivity extends AppCompatActivity {
                             checkAnswer();
 
                         } else
-                            Toast.makeText(SingerNameActivity.this, "حداقل 30 تا سکه میخوای !", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SongNameActivity.this, "حداقل 30 تا سکه میخوای !", Toast.LENGTH_SHORT).show();
                         return true;
                 }
                 sendScoreToMenu();
+
                 return false;
             }
         });
